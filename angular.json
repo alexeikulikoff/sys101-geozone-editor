@@ -21,7 +21,12 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+			    "glob": "**/*",
+			    "input": "node_modules/leaflet/dist/images/",
+			    "output": "./assets"
+			  }
             ],
             "styles": [
               "src/styles.css"
@@ -120,5 +125,8 @@
       }
     }
   },
-  "defaultProject": "sys101-geozone-editor"
+  "defaultProject": "sys101-geozone-editor",
+  "cli": {
+    "analytics": false
+  }
 }
