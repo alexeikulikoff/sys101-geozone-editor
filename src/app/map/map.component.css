@@ -8,7 +8,9 @@
   bottom: 0;
   margin: 30px;
 }
-
+.toolbar {
+	height: 50px;
+}
 .map-frame {
   border: 2px solid black;
   height: 100%;

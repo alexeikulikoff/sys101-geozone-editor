@@ -5,11 +5,11 @@ import * as mapReducer from './map.reducers';
 
 
 export interface IState {
-  map: mapReducer.IState
+  mapState: mapReducer.IState
 }
 
 export const reducers: ActionReducerMap<IState> = {
-	map: mapReducer.reducer
+  mapState: mapReducer.reducer
 }	
 
 export const metaReducers: Array<MetaReducer<IState>> = !environment.production ? [] : [];
