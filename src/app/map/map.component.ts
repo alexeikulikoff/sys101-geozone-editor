@@ -3,11 +3,11 @@ import * as L from 'leaflet';
 import { MarkerService } from '../services/marker.service';
 import { ShapeService } from '../services/shape.service';
 import { Store } from '@ngrx/store';
-import * as fromStore from '../store/reducers';
-import * as mapActions from '../store/actions/map.actions';
-import * as mapSelector from '../store/selectors/map.selectors';
+import * as fromStore from '../store/reducers/reducers';
+import * as mapActions from '../store/actions/actions';
+import * as mapSelector from '../store/selectors/selectors';
 import { Observable } from 'rxjs';
-import { IState } from '../store/reducers';
+import { State } from '../store/reducers/reducers';
 import { Layer, Point, Zone } from '../data/models';
 
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
@@ -42,7 +42,7 @@ const p0: Point[] = myPolygon1Array.map(s=>{
 })
 export class MapComponent implements OnInit {
 
-    editMode$: Observable<boolean> = this.store.select(mapSelector.editModeSelector);
+    editMode$: Observable<boolean> = this.store.select(mapSelector.selectEditMode);
 	layers$: Observable<Layer[]> = this.store.select(mapSelector.selectLayers); 
 
     editMode: boolean;
@@ -50,11 +50,15 @@ export class MapComponent implements OnInit {
 	private map;
 	private states;
 
-	constructor(private markerService: MarkerService, private shapeService: ShapeService,  private store: Store<fromStore.IState>) {
-		this.store.dispatch(mapActions.toggleEditMode())
+	constructor(private markerService: MarkerService, private shapeService: ShapeService,  private store: Store<fromStore.State>) {
+		this.store.dispatch(new mapActions.ToggleEditModeAction());
 		
-		const zone1: Zone = {name: 'zone1', position: [{x:100, y:200},{x:120, y:200},{x:100, y:220}]}	;
-		const zone2: Zone = {name: 'zone2', position: [{x:100, y:200},{x:120, y:200},{x:100, y:220}]}	;
+		const zone1: Zone = {name: 'zone1', position: myPolygon1Array.map(elem=> {
+			return {x: elem[0], y: elem[1]}
+		})  }	;
+		const zone2: Zone = {name: 'zone1', position: myPolygon1Array.map(elem=> {
+			return {x: elem[0], y: elem[1]}
+		})  }	;
 		const layer1: Layer = {name: 'layer1', zones: [zone1, zone2]};
 		const layer2: Layer = {name: 'layer1', zones: [zone1, zone2]};
 		
@@ -65,34 +69,37 @@ export class MapComponent implements OnInit {
 	//	this.store.dispatch(mapActions.createZone({layerName: 'layer1', zoneName: 'zone1'}));
 	//	this.store.dispatch(mapActions.updateZone({layerName: 'layer1', zoneName: 'zone1', position: p0}));
 		
-		this.layers$.subscribe(res => {
-			console.log(res);
-			this.layers = res;
-		});
+	
 		
 	 }
 
 	toggleEditMode(){
 	   console.log('ttoggle');
-	   this.store.dispatch(mapActions.toggleEditMode())	 ;
+	   this.store.dispatch(new mapActions.ToggleEditModeAction())	 ;
 	} 
-
+    changePolygon(){
+		this.store.dispatch(new mapActions.ChangePolygon());
+	}
 	ngOnInit(): void {
-		
+		this.store.dispatch(new mapActions.LoadLayersRequestAction());
 		this.editMode$.subscribe(res => {
 			this.editMode = res; 
-			
+		});
+		this.layers$.subscribe(res => {
+			console.log(res);
+			this.layers = res;
+			this.markerService.makePolygon(this.map, this.layers);
 		});
 	
 	}
 	ngAfterViewInit(): void {
 		this.initMap();
-		
 		this.shapeService.getStateShapes().subscribe(states => {
 			this.states = states;
 			this.initStatesLayer();
 		});
 		this.markerService.makeCapitalCircleMarkers(this.map);
+	
 	}
 	private initStatesLayer() {
 		const stateLayer = L.geoJSON(this.states, {
@@ -146,23 +153,18 @@ export class MapComponent implements OnInit {
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 		});
 		
-		var latlngs = [
-		    [45.51, -122.68],
-		    [37.77, -122.43],
-		    [34.04, -118.2]
-		];
-
-		var polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
-		
+	  
 		console.log(this.layers);
-		
-	//	const polyginArr1 = this.layers.filter(f=>f.name === 'layer1')[0].zones.filter(z=>z.name === 'zone1')[0].position.map(p=>{
+			
+	//	const testPoligon1 = this.layers.filter(f=>f.name === 'layer1')[0].zones.filter(z=>z.name === 'zone1')[0].position.map(p=>{
 	//		return [p.x, p.y];
-	//	})
-		var polygon1 = L.polygon(myPolygon1Array, {color: 'red'}).addTo(this.map);
+	///	})
+	//	var polygon1 = L.polygon(testPoligon1, {color: 'red'}).addTo(this.map);
 		
 		
-		var polygon2 = L.polygon(myPolygon2Array, {color: '#5eff33'}).addTo(this.map);
+		
+		
+	//	var polygon2 = L.polygon(myPolygon2Array, {color: '#5eff33'}).addTo(this.map);
 		
 		
 	//	this.map.fitBounds(polygon1.getBounds());

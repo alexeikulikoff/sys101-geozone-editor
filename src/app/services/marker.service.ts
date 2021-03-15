@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { PopUpService } from './pop-up.service';
+import { Layer } from '../data/models';
 
 
 
@@ -21,11 +22,19 @@ export class MarkerService {
 		return 20 * (val / maxVal);
 	}
 
+
+	makePolygon(map: L.map, layers: Layer[]): void  {
+		console.log(layers);
+		if (layers.length > 0) {
+		const testPoligon1 = layers.filter(f=>f.name === 'layer1')[0].zones.filter(z=>z.name === 'zone1')[0].position.map(p=>{
+			return [p.x, p.y];
+		})
+			var polygon1 = L.polygon(testPoligon1, {color: 'red'}).addTo(map);	
+		}
+		
+	}
 	makeCapitalCircleMarkers(map: L.map): void {
 		this.http.get(this.capitals).subscribe((res: any) => {
-			
-			
-
 			// Find the maximum population to scale the radii by.
 			const maxVal = Math.max(...res.features.map(x => x.properties.population), 0);
 

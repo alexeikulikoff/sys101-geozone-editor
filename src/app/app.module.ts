@@ -9,11 +9,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { PopUpService } from './services/pop-up.service';
 import { ShapeService } from './services/shape.service';
 import { StoreModule } from '@ngrx/store';
-import { metaReducers, reducers } from './store/reducers';
 import { environment } from 'src/environments/environment';
 import { EffectsModule } from '@ngrx/effects';
-import { rootEffects } from './store/effects';
+import { MapEffects } from './store/effects/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { MapModule } from './map/map.module';
 
 
 @NgModule({
@@ -25,16 +25,13 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     BrowserModule,
     AppRoutingModule,
  	HttpClientModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers,
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true,
-      }
+    EffectsModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25
     }),
-    !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot(rootEffects),
-
+	MapModule
   ],
   providers: [
 	MarkerService,
