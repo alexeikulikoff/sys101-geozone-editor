@@ -8,7 +8,7 @@ import * as mapSelector from '../store/selectors/selectors';
 import { Observable } from 'rxjs';
 import { State } from '../store/reducers/reducers';
 import { Layer, Point, Zone } from '../data/models';
-import { circle, latLng, marker, polygon, tileLayer } from 'leaflet';
+import { circle, latLng, LatLngExpression, marker, Polygon, polygon, PolylineOptions, tileLayer } from 'leaflet';
 
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -24,6 +24,24 @@ const p0: Point[] = myPolygon1Array.map(s=>{
 	return {x: Number(s[0]), y: Number(s[1])};
 
 }) ;
+
+export class PolyG extends Polygon{
+	
+	id: string;
+	name: string;
+	constructor(latlngs: LatLngExpression[] | LatLngExpression[][] | LatLngExpression[][][], id: string, name: string ){
+        super(latlngs);
+		this.name = name;
+		this.id = id;
+    }
+	getId():string {
+		return this.id;
+	}
+	getName(): string{
+		return this.name;
+	}
+}
+
 
 @Component({
 	selector: 'app-map',
@@ -50,11 +68,8 @@ export class MapComponent implements OnInit {
 	  }
    }
 
-	customLayers = [
-		circle([ 46.95, -122 ], { radius: 5000 }),
-		polygon([[ 46.8, -121.85 ], [ 46.92, -121.92 ], [ 46.87, -121.8 ]]),
-		marker([ 46.879966, -121.726909 ])
-	];
+	customLayers: Polygon[] = [];
+	
     editMode$: Observable<boolean> = this.store.select(mapSelector.selectEditMode);
 	layers$: Observable<Layer[]> = this.store.select(mapSelector.selectLayers); 
 
@@ -92,6 +107,13 @@ export class MapComponent implements OnInit {
 	changePolygon2(){
 		this.store.dispatch(new mapActions.ChangePolygon2());
 	}
+	filter1(){
+		
+		const ZZ = this.customLayers.filter((f: PolyG) => f.name !== 'name2');
+		ZZ.forEach((s: PolyG)=> {
+			console.log(s.getName());
+		});
+	}
 	ngOnInit(): void {
 		
 		this.store.dispatch(new mapActions.LoadLayersRequestAction());
@@ -99,18 +121,39 @@ export class MapComponent implements OnInit {
 		this.editMode$.subscribe(res => {
 			this.editMode = res; 
 		});
+		
+		var i= 0;
 		this.layers$.subscribe(res => {
-			console.log(res);
 			this.layers = res;
 			
 			if (this.layers.length > 0){
+				i++;
 				
-				this.customLayers = [
-					polygon(this.layers.filter(f=>f.name === 'layer1')[0].zones.filter(z=>z.name === 'zone1')[0].position.map(p=>{
-					return [p.x, p.y];
-				})),
-				]
+				const polygone = new PolyG(this.layers.filter(f=>f.name === 'layer1')[0].zones.filter(z=>z.name === 'zone1')[0].position.map(p=>{
+							return [ p.x + i, p.y + i];
+					}), i + '' ,'name' + i);
+					
+					
+				polygone.bindTooltip(polygone.getName(), { permanent: true, direction:"center" });
+				
+			//	console.log(polygone.getName());
+				
+				this.customLayers.push(polygone);
+				
+				this.customLayers.forEach((s: PolyG) => {
+					console.log(s.getName());
+				})
+				
+				for(var j=0; j < this.customLayers.length; j++){
+					
+					 // const dt: PolyG = this.customLayers[j];
+					 // console.log( dt.getName());
+				}
+			
 			}
+			
+		
+			//this.customLayers.forEach(s  => console.log(s));
 		});
 	
 	}

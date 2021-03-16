@@ -186,6 +186,11 @@
     "tslib" "^2.0.0"
     "yargs" "^16.1.1"
 
+"@angular/compiler@>=2.3.1 <12.0.0 || ^11.0.0-next || ^11.1.0-next || ^11.2.0-next":
+  "integrity" "sha512-ctjwuntPfZZT2mNj2NDIVu51t9cvbhl/16epc5xEwyzyDt76pX9UgwvY+MbXrf/C/FWwdtmNtfP698BKI+9leQ=="
+  "resolved" "https://registry.yarnpkg.com/@angular/compiler/-/compiler-9.0.0.tgz"
+  "version" "9.0.0"
+
 "@angular/compiler@~11.0.5", "@angular/compiler@11.0.9":
   "integrity" "sha512-H2IfS6ciPWN0kmKhbwDuvS8ry5GcRFKfoyA/HGk+nQwCE2nAHC8VNwldbtoisO7XfRWr/uaTrh6z/vdfxsAiHw=="
   "resolved" "https://registry.yarnpkg.com/@angular/compiler/-/compiler-11.0.9.tgz"
@@ -193,12 +198,7 @@
   dependencies:
     "tslib" "^2.0.0"
 
-"@angular/compiler@9.0.0":
-  "integrity" "sha512-ctjwuntPfZZT2mNj2NDIVu51t9cvbhl/16epc5xEwyzyDt76pX9UgwvY+MbXrf/C/FWwdtmNtfP698BKI+9leQ=="
-  "resolved" "https://registry.yarnpkg.com/@angular/compiler/-/compiler-9.0.0.tgz"
-  "version" "9.0.0"
-
-"@angular/core@^11.0.0", "@angular/core@>=10", "@angular/core@~11.0.5", "@angular/core@11.0.9", "@angular/core@9.0.0":
+"@angular/core@^11.0.0", "@angular/core@>=10", "@angular/core@>=2.3.1 <12.0.0 || ^11.0.0-next || ^11.1.0-next || ^11.2.0-next", "@angular/core@~11.0.5", "@angular/core@11.0.9":
   "integrity" "sha512-J0ff3UK2Cw7Z0eNLtUXrpMFvmmkvPPZWLYIwimyc1pZys7qsIVT6cy2ybGEOhbJgC6qt3fo0DoJV3pGXTalb8A=="
   "resolved" "https://registry.yarnpkg.com/@angular/core/-/core-11.0.9.tgz"
   "version" "11.0.9"
@@ -2355,7 +2355,6 @@
     "anymatch" "^2.0.0"
     "async-each" "^1.0.1"
     "braces" "^2.3.2"
-    "fsevents" "^1.2.7"
     "glob-parent" "^3.1.0"
     "inherits" "^2.0.3"
     "is-binary-path" "^1.0.0"
@@ -2374,7 +2373,6 @@
   dependencies:
     "anymatch" "~3.1.1"
     "braces" "~3.0.2"
-    "fsevents" "~2.3.1"
     "glob-parent" "~5.1.0"
     "is-binary-path" "~2.1.0"
     "is-glob" "~4.0.1"
@@ -4500,11 +4498,6 @@
   "resolved" "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz"
   "version" "5.1.8"
 
-"image-size@~0.5.0":
-  "integrity" "sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w="
-  "resolved" "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz"
-  "version" "0.5.5"
-
 "immediate@~3.0.5":
   "integrity" "sha1-nbHb0Pr43m++D13V5Wu2BigN5ps="
   "resolved" "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz"
@@ -5162,8 +5155,6 @@
   "integrity" "sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss="
   "resolved" "https://registry.yarnpkg.com/jsonfile/-/jsonfile-4.0.0.tgz"
   "version" "4.0.0"
-  dependencies:
-    "graceful-fs" "^4.1.6"
   optionalDependencies:
     "graceful-fs" "^4.1.6"
 
@@ -5335,13 +5326,6 @@
   "resolved" "https://registry.yarnpkg.com/less/-/less-3.12.2.tgz"
   "version" "3.12.2"
   dependencies:
-    "errno" "^0.1.1"
-    "graceful-fs" "^4.1.2"
-    "image-size" "~0.5.0"
-    "make-dir" "^2.1.0"
-    "mime" "^1.4.1"
-    "native-request" "^1.0.5"
-    "source-map" "~0.6.0"
     "tslib" "^1.10.0"
   optionalDependencies:
     "errno" "^0.1.1"
@@ -5666,12 +5650,7 @@
   dependencies:
     "mime-db" "1.46.0"
 
-"mime@^1.4.1":
-  "integrity" "sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg=="
-  "resolved" "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz"
-  "version" "1.6.0"
-
-"mime@^2.4.4", "mime@^2.4.5":
+"mime@^1.4.1", "mime@^2.4.4", "mime@^2.4.5":
   "integrity" "sha512-tqkh47FzKeCPD2PUiPB6pkbMzsCasjxAfC62/Wap5qrUWcb+sFasXUC5I3gYM5iBM8v/Qpn4UK0x+j0iHyFPDg=="
   "resolved" "https://registry.yarnpkg.com/mime/-/mime-2.5.2.tgz"
   "version" "2.5.2"
@@ -5896,11 +5875,6 @@
     "regex-not" "^1.0.0"
     "snapdragon" "^0.8.1"
     "to-regex" "^3.0.1"
-
-"native-request@^1.0.5":
-  "integrity" "sha512-vU2JojJVelUGp6jRcLwToPoWGxSx23z/0iX+I77J3Ht17rf2INGjrhOoQnjVo60nQd8wVsgzKkPfRXBiVdD2ag=="
-  "resolved" "https://registry.yarnpkg.com/native-request/-/native-request-1.0.8.tgz"
-  "version" "1.0.8"
 
 "negotiator@0.6.2":
   "integrity" "sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw=="
@@ -7497,8 +7471,6 @@
   "integrity" "sha512-Op2vWTpvK7t6/Qnm1TTh7VjEZZkN8RWgf0DHbkKzQBwNf748YhXbozHVefqpPp/Fuyk/PQPAnYsBxAEtlMvpUw=="
   "resolved" "https://registry.yarnpkg.com/rollup/-/rollup-2.32.1.tgz"
   "version" "2.32.1"
-  dependencies:
-    "fsevents" "~2.1.2"
   optionalDependencies:
     "fsevents" "~2.1.2"
 
@@ -8991,22 +8963,13 @@
   "resolved" "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz"
   "version" "2.0.1"
 
-"watchpack-chokidar2@^2.0.1":
-  "integrity" "sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww=="
-  "resolved" "https://registry.yarnpkg.com/watchpack-chokidar2/-/watchpack-chokidar2-2.0.1.tgz"
-  "version" "2.0.1"
-  dependencies:
-    "chokidar" "^2.1.8"
-
 "watchpack@^1.7.4":
   "integrity" "sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ=="
   "resolved" "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz"
   "version" "1.7.5"
   dependencies:
-    "chokidar" "^3.4.1"
     "graceful-fs" "^4.1.2"
     "neo-async" "^2.5.0"
-    "watchpack-chokidar2" "^2.0.1"
   optionalDependencies:
     "chokidar" "^3.4.1"
     "watchpack-chokidar2" "^2.0.1"

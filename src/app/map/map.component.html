@@ -3,10 +3,11 @@
   	<button type="button" (click)="toggleEditMode()">Toggle</button> 
   	<button type="button" (click)="changePolygon1()">Push me</button> 
   	<button type="button" (click)="changePolygon2()">Push me</button> 
+	<button type="button" (click)="filter1()">Filter</button> 
   </div>
   <div style="height: 600px;"
      leaflet 
      [leafletOptions]="options"
-       [leafletLayers]="customLayers">>
+     [leafletLayers]="customLayers">
 </div>
 </div>
