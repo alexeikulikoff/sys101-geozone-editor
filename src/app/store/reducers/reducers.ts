@@ -56,6 +56,23 @@ export function mapReducer(state = initialState, action: Actions): State {
         
       };
     }
+	case ActionTypes.CHANGE_POLYGON2: {
+	  const zone1: Zone = {name: 'zone1', position: myPolygon1Array.map(elem=> {
+			return {x: elem[0], y: elem[1]}
+		})  }	;
+		const zone2: Zone = {name: 'zone1', position: myPolygon2Array.map(elem=> {
+			return {x: elem[0], y: elem[1]}
+		})  }	;
+		const layer1: Layer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer2: Layer = {name: 'layer1', zones: [zone1, zone2]};
+		
+		const layers: Layer[] = [layer1, layer2];	
+      return {
+        ...state,
+        layers: layers,
+        
+      };
+    }
   default: {
       return state;
   }

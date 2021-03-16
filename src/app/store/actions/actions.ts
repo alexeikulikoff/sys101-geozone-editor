@@ -8,6 +8,7 @@ export enum ActionTypes {
   LOAD_LAYERS_FAILURE = "[MAP] Load Layers Failure",
   LOAD_LAYERS_SUCCESS = "[Map] Load Layers Success",
   CHANGE_POLYGON = "[Map] CHANGE POLYGON",
+  CHANGE_POLYGON2 = "[Map] CHANGE POLYGON2",
  
 }
 
@@ -33,6 +34,10 @@ export class ChangePolygon implements Action {
   readonly type = ActionTypes.CHANGE_POLYGON;
 }
 
+export class ChangePolygon2 implements Action {
+  readonly type = ActionTypes.CHANGE_POLYGON2;
+}
+
 
 export type Actions =
   | ToggleEditModeAction
@@ -40,3 +45,4 @@ export type Actions =
   | LoadLayersFailureAction
   | LoadLayersSuccessAction
   | ChangePolygon
+  | ChangePolygon2
