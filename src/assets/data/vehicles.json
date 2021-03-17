@@ -1,0 +1,18 @@
+[
+	{	
+		"options":{"title":"veh1"},
+		"_latlng":{"lat":46.95,"lng":-126},
+		"_initHooksCalled":true,
+		"name":"veh1",
+		"id":"v1"
+	},
+	
+	{
+		"options":{"title":"veh2"},
+		"_latlng":{"lat":47.95,"lng":-125},
+		"_initHooksCalled":true,
+		"name":"veh2",
+		"id":"v2"
+		
+	}
+]

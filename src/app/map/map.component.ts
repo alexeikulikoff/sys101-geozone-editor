@@ -7,8 +7,9 @@ import * as mapActions from '../store/actions/actions';
 import * as mapSelector from '../store/selectors/selectors';
 import { Observable } from 'rxjs';
 import { State } from '../store/reducers/reducers';
-import { Layer, Point, Zone } from '../data/models';
-import { circle, latLng, LatLngExpression, marker, Polygon, polygon, PolylineOptions, tileLayer } from 'leaflet';
+import { MyLayer, Point, Zone } from '../data/models';
+import { circle, Class, latLng, LatLngExpression, marker, Polygon, polygon, PolylineOptions, tileLayer, Layer, MarkerOptions, Marker, LatLng } from 'leaflet';
+import { VehicleDto, VehicleLayer } from '../models';
 
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
@@ -41,7 +42,21 @@ export class PolyG extends Polygon{
 		return this.name;
 	}
 }
-
+export class Vehicle extends Marker{
+	
+	name: string;
+	constructor(latlng: LatLngExpression,  name: string, options?: MarkerOptions){
+        super(latlng, { title: name });
+		this.name = name;
+		
+		this.options
+		
+    }
+	
+	getName(): string{
+		return this.name;
+	}
+}
 
 @Component({
 	selector: 'app-map',
@@ -52,29 +67,24 @@ export class MapComponent implements OnInit {
 
 	options = {
 		layers: [
-			tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+			tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
+			circle([ 46.95, -126 ], { radius: 18000 })
 		],
 		zoom: 5,
 		center: latLng(46.879966, -121.726909)
 	};
-	layersControl = {
-		baseLayers: {
-			'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
-			'Open Cycle Map': tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-		},
-		overlays: {
-			'Big Circle': circle([ 46.95, -122 ], { radius: 5000 }),
-			'Big Square': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]])
-	  }
-   }
+	
 
-	customLayers: Polygon[] = [];
+	customLayers: Layer[] = [];
+
 	
     editMode$: Observable<boolean> = this.store.select(mapSelector.selectEditMode);
-	layers$: Observable<Layer[]> = this.store.select(mapSelector.selectLayers); 
+	layers$: Observable<MyLayer[]> = this.store.select(mapSelector.selectLayers); 
+	vehicleLayer$: Observable<VehicleLayer> = this.store.select(mapSelector.selectVehicleLayer);
+    customLayers$: Observable<Layer[]> = this.store.select(mapSelector.selectCustomLayer);
 
     editMode: boolean;
-	layers: Layer[];
+	layers: MyLayer[];
 	private map;
 	private states;
 
@@ -87,13 +97,17 @@ export class MapComponent implements OnInit {
 		const zone2: Zone = {name: 'zone1', position: myPolygon1Array.map(elem=> {
 			return {x: elem[0], y: elem[1]}
 		})  }	;
-		const layer1: Layer = {name: 'layer1', zones: [zone1, zone2]};
-		const layer2: Layer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer1: MyLayer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer2: MyLayer = {name: 'layer1', zones: [zone1, zone2]};
 		
-		const layers: Layer[] = [layer1, layer2];
+		const layers: MyLayer[] = [layer1, layer2];
 		
-		console.log(JSON.stringify(layers));
-	
+	//	console.log(JSON.stringify(layers));
+		
+	//	const v1: Vehicle = new Vehicle([ 46.95, -126 ],'v1','veh1');
+	//	const v2: Vehicle = new Vehicle([ 47.95, -125 ],'v2','veh2');
+	//	const v0  = [v1, v2]; 
+		//console.log(JSON.stringify(v0));
 		
 	 }
 
@@ -101,15 +115,16 @@ export class MapComponent implements OnInit {
 	   console.log('ttoggle');
 	   this.store.dispatch(new mapActions.ToggleEditModeAction())	 ;
 	} 
-    changePolygon1(){
-		this.store.dispatch(new mapActions.ChangePolygon());
+    reloadVehicle(){
+		//this.store.dispatch(new mapActions.ChangePolygon());
+		this.store.dispatch(new mapActions.LoadVehicleRequestAction());
 	}
-	changePolygon2(){
-		this.store.dispatch(new mapActions.ChangePolygon2());
+	updateVehicle(){
+		this.store.dispatch(new mapActions.UpdateVehicleSuccessAction());
 	}
 	filter1(){
 		
-		const ZZ = this.customLayers.filter((f: PolyG) => f.name !== 'name2');
+		const ZZ = this.customLayers.filter((f: PolyG | Vehicle) => f.name !== 'name2');
 		ZZ.forEach((s: PolyG)=> {
 			console.log(s.getName());
 		});
@@ -117,11 +132,59 @@ export class MapComponent implements OnInit {
 	ngOnInit(): void {
 		
 		this.store.dispatch(new mapActions.LoadLayersRequestAction());
+		this.store.dispatch(new mapActions.LoadVehicleRequestAction());
+		const tmp1 = marker([ 46.879966, -121.726909 ]);
+		const tmp2 = marker([ 44.879966, -121.726909 ]);
+	
+	    const tmp0 = [tmp1, tmp2];
+
+	   //this.customLayers = tmp0;
+
+		this.customLayers$.subscribe(res=>{
+			console.log(res);
+			this.customLayers = res;
+			res.forEach(s=>{
+				
+			})
+			//this.customLayers = res;
+		})	
+			//this.customLayers = layer;
+		
+		//const pol1 = new PolyG(myPolygon1Array.map(s => latLng(s[0], s[1])), '1' ,'ploy1');
+	//	const pol2 = new PolyG(myPolygon1Array.map(s => latLng(s[0] + 1,s[1] + 1)), '1' ,'ploy1');
+		
+	//	this.customLayers.push(pol1);
+	//	this.customLayers.push(pol2);
+	
+	//    this.customLayers$.subscribe(s=>{
+	//		console.log(s);
+	//		this.customLayers.push(s);
+	//	});
+	
+	//	this.vehicleLayer$.subscribe((layer: VehicleLayer) => {
+		//	this.customLayers.length = 0;
+	//		layer.vehicles.forEach((dto: VehicleDto) => {
+			
+	//	      const vehicle: Vehicle =  new Vehicle(latLng(dto.x, dto.y), dto.id ,dto.name);
+	//		  const index =  this.customLayers.findIndex((s: Vehicle)  => s.name === dto.name);
+			//  if ( index < 0 ){
+				 
+	//			  this.customLayers.push(vehicle);
+		 		 
+			//  }else{
+
+			//	this.customLayers = [...this.customLayers.slice(0,index), vehicle, ...this.customLayers.slice(index+1) ];
+					
+			//   } 
+			
+				
+	//		});
+	//	});
 		
 		this.editMode$.subscribe(res => {
 			this.editMode = res; 
 		});
-		
+/*		
 		var i= 0;
 		this.layers$.subscribe(res => {
 			this.layers = res;
@@ -130,34 +193,31 @@ export class MapComponent implements OnInit {
 				i++;
 				
 				const polygone = new PolyG(this.layers.filter(f=>f.name === 'layer1')[0].zones.filter(z=>z.name === 'zone1')[0].position.map(p=>{
-							return [ p.x + i, p.y + i];
-					}), i + '' ,'name' + i);
-					
+						return [p.x + i, p.y + i]	
+				}), i + '' ,'name' + i);
 					
 				polygone.bindTooltip(polygone.getName(), { permanent: true, direction:"center" });
 				
-			//	console.log(polygone.getName());
-				
 				this.customLayers.push(polygone);
 				
-				this.customLayers.forEach((s: PolyG) => {
-					console.log(s.getName());
-				})
+				this.customLayers.push(new Vehicle([ 46.879966 + i, -121.726909 + i ], i + '' ,'vehicle' + i));
 				
-				for(var j=0; j < this.customLayers.length; j++){
+				
+				this.customLayers.forEach((s: PolyG | Vehicle) => {
 					
-					 // const dt: PolyG = this.customLayers[j];
-					 // console.log( dt.getName());
-				}
-			
+					  console.log(s.getName());	
+					
+				});
+				
+		
 			}
 			
-		
+	
 			//this.customLayers.forEach(s  => console.log(s));
 		});
-	
+*/	
 	}
-	ngAfterViewInit(): void {
-	}
+
+
 
 }

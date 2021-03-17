@@ -1,4 +1,6 @@
-import { Layer, Zone } from 'src/app/data/models';
+import { latLng, Layer, marker } from 'leaflet';
+import { MyLayer, Zone } from 'src/app/data/models';
+import { Vehicle, VehicleDto, VehicleLayer } from 'src/app/models';
 import { Actions, ActionTypes } from '../actions/actions';
 
 export const mapFeatureKey = 'mapKey';
@@ -10,13 +12,20 @@ const myPolygon2Array = [[44.546103590247625, -108.93763284405529],[42.305529177
 
 export interface State {
 	editMode: boolean;
-	layers: Layer[];
+	layers: MyLayer[];
+	
+	vehicleLayer: VehicleLayer;
+	customLayers: Layer[];
+	
 	
 }
 
 export const initialState: State = {
 	editMode: false,
-	layers: []
+	layers: [],
+	vehicleLayer: {id: '', name:'', vehicles: [] },
+	customLayers: []
+	
 	
 }
 
@@ -25,13 +34,46 @@ export function mapReducer(state = initialState, action: Actions): State {
   switch (action.type) {
 	case ActionTypes.TOGGLE_EDIT_MODE: {
 	
-	  console.log(state);	
       return {
         ...state,
         editMode: !state.editMode,
         
       };
     }
+	case ActionTypes.UPDATE_VEHICLE_POSITION: {
+	
+	   const ve: VehicleDto[] = state.vehicleLayer.vehicles.map( (s: VehicleDto) => {
+		 return ( s.name === 'Vehicle1' ) ? { ...s, x: s.x + 1} : s;  
+	  });	
+	 const index = state.vehicleLayer.vehicles.findIndex(s => s.name === 'Vehicle1');
+     
+//		return {
+	//		...state,
+//			vehicleLayer: {...state.vehicleLayer, vehicles: [
+//				...state.vehicleLayer.vehicles.slice(0,index),
+//				{id: state.vehicleLayer.vehicles[index].id, name: state.vehicleLayer.vehicles[index].name, 
+//				 x: state.vehicleLayer.vehicles[index].x + 1, y: state.vehicleLayer.vehicles[index].y },
+//				...state.vehicleLayer.vehicles.slice(index+1),
+//			]}
+//		}
+      return {...state, 
+			vehicleLayer: {...state.vehicleLayer, vehicles: ve }
+		}
+    }
+
+	case ActionTypes.LOAD_VEHILES_SUCCESS: {
+	  
+      return {
+        ...state,
+        vehicleLayer: action.payload.vehicleLayer,
+        customLayers: state.customLayers.concat(marker([ 44.879966, -121.726909 ]))  
+	//	customLayers: state.customLayers.concat(action.payload.vehicleLayer.vehicles.map(ve=>{
+	//		return new Vehicle(latLng(ve.x, ve.y), ve.name);
+	//	}))
+      };
+    }
+
+
 	case ActionTypes.LOAD_LAYERS_SUCCESS: {
       return {
         ...state,
@@ -46,10 +88,10 @@ export function mapReducer(state = initialState, action: Actions): State {
 		const zone2: Zone = {name: 'zone1', position: myPolygon1Array.map(elem=> {
 			return {x: elem[0], y: elem[1]}
 		})  }	;
-		const layer1: Layer = {name: 'layer1', zones: [zone1, zone2]};
-		const layer2: Layer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer1: MyLayer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer2: MyLayer = {name: 'layer1', zones: [zone1, zone2]};
 		
-		const layers: Layer[] = [layer1, layer2];	
+		const layers: MyLayer[] = [layer1, layer2];	
       return {
         ...state,
         layers: layers,
@@ -63,10 +105,10 @@ export function mapReducer(state = initialState, action: Actions): State {
 		const zone2: Zone = {name: 'zone1', position: myPolygon2Array.map(elem=> {
 			return {x: elem[0], y: elem[1]}
 		})  }	;
-		const layer1: Layer = {name: 'layer1', zones: [zone1, zone2]};
-		const layer2: Layer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer1: MyLayer = {name: 'layer1', zones: [zone1, zone2]};
+		const layer2: MyLayer = {name: 'layer1', zones: [zone1, zone2]};
 		
-		const layers: Layer[] = [layer1, layer2];	
+		const layers: MyLayer[] = [layer1, layer2];	
       return {
         ...state,
         layers: layers,

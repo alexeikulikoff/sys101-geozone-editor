@@ -9,6 +9,18 @@ const getEmployeeState = createFeatureSelector<State>(
   mapFeatureKey
 );
 
+
+export const selectVehicleLayer = createSelector(
+	getEmployeeState,
+	state => state.vehicleLayer
+	
+) ;
+export const selectCustomLayer = createSelector(
+	getEmployeeState,
+	state => state.customLayers
+	
+) ;
+
 export const selectEditMode = createSelector(
   getEmployeeState,
   state => state.editMode

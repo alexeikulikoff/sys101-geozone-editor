@@ -9,7 +9,7 @@ export interface Zone{
 	position: Point[];
 }
 
-export interface Layer{
+export interface MyLayer{
 	name: string;
 	zones: Zone[];
 }
