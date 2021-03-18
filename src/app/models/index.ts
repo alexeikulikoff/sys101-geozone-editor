@@ -1,10 +1,11 @@
-import { circle, Class, latLng, LatLngExpression, marker, Polygon, polygon, PolylineOptions, tileLayer, Layer, MarkerOptions, Marker } from 'leaflet';
+import { LatLngExpression,  Polygon,   tileLayer,  MarkerOptions, Marker } from 'leaflet';
 
 export interface VehicleDto{
 	id: string;
 	name: string;
 	x: number;
 	y:number;
+	marker: L.Marker;
 	
 }
 

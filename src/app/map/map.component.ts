@@ -11,6 +11,8 @@ import { MyLayer, Point, Zone } from '../data/models';
 import { circle, Class, latLng, LatLngExpression, marker, Polygon, polygon, PolylineOptions, tileLayer, Layer, MarkerOptions, Marker, LatLng } from 'leaflet';
 import { VehicleDto, VehicleLayer } from '../models';
 
+import { MarkerService } from '../services/marker.service';
+
 const iconRetinaUrl = 'assets/marker-icon-2x.png';
 const iconUrl = 'assets/marker-icon.png';
 const shadowUrl = 'assets/marker-shadow.png';
@@ -65,30 +67,18 @@ export class Vehicle extends Marker{
 })
 export class MapComponent implements OnInit {
 
-	options = {
-		layers: [
-			tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
-			circle([ 46.95, -126 ], { radius: 18000 })
-		],
-		zoom: 5,
-		center: latLng(46.879966, -121.726909)
-	};
-	
-
-	customLayers: Layer[] = [];
-
-	
+	vehicleLayer: VehicleLayer;
     editMode$: Observable<boolean> = this.store.select(mapSelector.selectEditMode);
-	layers$: Observable<MyLayer[]> = this.store.select(mapSelector.selectLayers); 
 	vehicleLayer$: Observable<VehicleLayer> = this.store.select(mapSelector.selectVehicleLayer);
-    customLayers$: Observable<Layer[]> = this.store.select(mapSelector.selectCustomLayer);
 
     editMode: boolean;
 	layers: MyLayer[];
 	private map;
 	private states;
-
-	constructor(  private store: Store<fromStore.State>) {
+	marker: Layer;
+	x: number = 45.879966;
+	y: number =  -121.726909;
+	constructor(private markerService: MarkerService,  private store: Store<fromStore.State>) {
 		this.store.dispatch(new mapActions.ToggleEditModeAction());
 		
 		const zone1: Zone = {name: 'zone1', position: myPolygon1Array.map(elem=> {
@@ -102,52 +92,61 @@ export class MapComponent implements OnInit {
 		
 		const layers: MyLayer[] = [layer1, layer2];
 		
-	//	console.log(JSON.stringify(layers));
-		
-	//	const v1: Vehicle = new Vehicle([ 46.95, -126 ],'v1','veh1');
-	//	const v2: Vehicle = new Vehicle([ 47.95, -125 ],'v2','veh2');
-	//	const v0  = [v1, v2]; 
-		//console.log(JSON.stringify(v0));
-		
+
 	 }
 
 	toggleEditMode(){
 	   console.log('ttoggle');
 	   this.store.dispatch(new mapActions.ToggleEditModeAction())	 ;
 	} 
-    reloadVehicle(){
+    moveBottom(){
 		//this.store.dispatch(new mapActions.ChangePolygon());
-		this.store.dispatch(new mapActions.LoadVehicleRequestAction());
+		//this.store.dispatch(new mapActions.LoadVehicleRequestAction());
+		
+		this.vehicleLayer.vehicles[0].marker.addTo(this.map);
+		
+		//this.marker.remove();
+		//this.marker = L.marker([ --this.x, this.y ]).addTo(this.map);
 	}
-	updateVehicle(){
-		this.store.dispatch(new mapActions.UpdateVehicleSuccessAction());
+	moveTop(){
+		
+		this.marker.remove();
+		this.marker = L.marker([ ++this.x, this.y ]).addTo(this.map);
+		//this.store.dispatch(new mapActions.UpdateVehicleSuccessAction());
 	}
 	filter1(){
 		
-		const ZZ = this.customLayers.filter((f: PolyG | Vehicle) => f.name !== 'name2');
-		ZZ.forEach((s: PolyG)=> {
-			console.log(s.getName());
-		});
+	
 	}
+	
+	private initMap(): void {
+		
+  		this.map = L.map('map', {
+    		center: [ 39.8282, -98.5795 ],
+    		zoom: 3
+  		});
+		const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  			maxZoom: 19,
+  			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		});
+		tiles.addTo(this.map);
+	}
+	
 	ngOnInit(): void {
+		
+		this.initMap();
+		
+	//	this.marker = L.marker([ this.x, this.y ]).addTo(this.map);
 		
 		this.store.dispatch(new mapActions.LoadLayersRequestAction());
 		this.store.dispatch(new mapActions.LoadVehicleRequestAction());
-		const tmp1 = marker([ 46.879966, -121.726909 ]);
-		const tmp2 = marker([ 44.879966, -121.726909 ]);
-	
-	    const tmp0 = [tmp1, tmp2];
-
-	   //this.customLayers = tmp0;
-
-		this.customLayers$.subscribe(res=>{
-			console.log(res);
-			this.customLayers = res;
-			res.forEach(s=>{
-				
-			})
-			//this.customLayers = res;
-		})	
+		
+		this.vehicleLayer$.subscribe(res=>{
+			this.vehicleLayer = res;
+			
+		});
+		
+		
 			//this.customLayers = layer;
 		
 		//const pol1 = new PolyG(myPolygon1Array.map(s => latLng(s[0], s[1])), '1' ,'ploy1');

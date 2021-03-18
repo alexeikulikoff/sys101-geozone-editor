@@ -11,7 +11,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { MapEffects } from './store/effects/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MapModule } from './map/map.module';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import * as L from 'leaflet';
 
 
 @NgModule({
@@ -30,7 +30,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
       maxAge: 25
     }),
 	MapModule,
-	LeafletModule
+
   ],
   providers: [
   ],

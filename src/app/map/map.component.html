@@ -1,13 +1,15 @@
 <div class="map-container">
   <div class="toolbar">
   	<button type="button" (click)="toggleEditMode()">Toggle</button> 
-  	<button type="button" (click)="reloadVehicle()">Reload Vehicle</button> 
-  	<button type="button" (click)="updateVehicle()">Update Vehicle</button> 
+  	<button type="button" (click)="moveTop()">Move Top</button> 
+  	<button type="button" (click)="moveBottom()">Move Bottom</button> 
 	<button type="button" (click)="filter1()">Filter</button> 
   </div>
-  <div style="height: 600px;"
-     leaflet 
-     [leafletOptions]="options"
-     [leafletLayers]="customLayers">
+ 
+ <div class="map-container">
+  <div class="map-frame">
+    <div id="map"></div>
+  </div>
 </div>
+ 
 </div>
